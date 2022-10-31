@@ -5,14 +5,15 @@ export const List = styled.ul`
   grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
   grid-template-rows: auto;
   gap: 20px;
-  margin: 0;
+  margin-bottom: 20px;
+  ${'' /* margin: 0; */}
   padding: 20px;
 `;
 
 export const Item = styled.li`
   display: flex;
   gap: 10px;
-  justify-content: space-evenly;
+  justify-content: space-between;
 `;
 
 export const Button = styled.button`

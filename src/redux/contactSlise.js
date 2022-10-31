@@ -1,49 +1,59 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import { fetchContacts, addContact, deleteContact } from './operations';
 
-export const contactSlice = createSlice({
+const contactsSlice = createSlice({
   name: 'contacts',
   initialState: {
-    items: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
+    items: [],
+    isLoading: false,
+    error: null,
   },
-  reducers: {
-    addContact(state, action) {
-      state.items.unshift(action.payload);
-    },
-    removeContact(state, action) {
+  extraReducers: {
+    [fetchContacts.fulfilled]: (state, { payload }) => {
       return {
         ...state,
-        items: state.items.filter(item => item.id !== action.payload),
+        items: [...payload],
+        isLoading: false,
+        error: null,
       };
     },
-    filterChange(state, action) {
-      state.filter = action.payload;
+    [fetchContacts.pending]: state => {
+      return { ...state, isLoading: true };
+    },
+    [fetchContacts.rejected]: (state, { payload }) => {
+      return { ...state, error: payload, isLoading: false };
+    },
+
+    [addContact.fulfilled]: (state, { payload }) => {
+      return {
+        ...state,
+        items: [...state.items, payload],
+        isLoading: false,
+        error: null,
+      };
+    },
+    [addContact.pending]: state => {
+      return { ...state, isLoading: true };
+    },
+    [addContact.rejected]: (state, { payload }) => {
+      return { ...state, error: payload, isLoading: false };
+    },
+
+    [deleteContact.fulfilled]: (state, { payload }) => {
+      console.log(payload);
+      return {
+        ...state,
+        items: [...state.items.filter(item => item.id !== payload.id)],
+        isLoading: false,
+      };
+    },
+    [deleteContact.pending]: state => {
+      return { ...state, isLoading: true };
+    },
+    [deleteContact.rejected]: (state, { payload }) => {
+      return { ...state, error: payload };
     },
   },
 });
 
-const persistConfig = {
-  key: 'contacts',
-  version: 1,
-  storage,
-  blacklist: ['filter'],
-};
-
-export const contactsReducer = persistReducer(
-  persistConfig,
-  contactSlice.reducer
-);
-
-export const { addContact, removeContact, filterChange } = contactSlice.actions;
-
-// SELECTORS
-
-export const getContacts = state => state.contacts.items;
-export const getFilterValue = state => state.contacts.filter;
+export const contactsReducer = contactsSlice.reducer;
