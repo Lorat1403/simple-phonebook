@@ -8,7 +8,7 @@ import { addContact } from 'redux/operations';
 const nameInputId = nanoid(5);
 const numberInputId = nanoid(8);
 
-const ContactForm = () => {
+const ContactForm = () => { 
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -35,6 +35,8 @@ const ContactForm = () => {
       alert(`${name} is already in contacts`);
     } else if (findNumber) {
       alert(`${number} is already in contacts`);
+      setName('');
+      setNumber('');
     }
   };
 
