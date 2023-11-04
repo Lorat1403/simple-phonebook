@@ -6,7 +6,7 @@ export const List = styled.ul`
   grid-template-rows: auto;
   gap: 20px;
   margin-bottom: 20px;
-  ${'' /* margin: 0; */}
+
   padding: 20px;
 `;
 
